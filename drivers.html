@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Drivers{% endblock %}
+{% block content %}
+<h1>Drivers</h1>
+<form method="get" class="inline-form">
+  <label for="q">Name contains</label>
+  <input id="q" name="q" value="{{ query }}" maxlength="50" placeholder="e.g. ver">
+  <button type="submit">Search</button>
+  {% if query %}<a href="{{ url_for('drivers') }}">Show all</a>{% endif %}
+</form>
+{% if drivers %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Driver</th><th>Nationality</th><th>Born</th></tr></thead>
+  <tbody>
+  {% for d in drivers %}
+    <tr>
+      <td><a href="{{ url_for('driver_profile', driver_id=d['driver_id']) }}">{{ d['driver_name'] }}</a></td>
+      <td>{{ d['nationality'] }}</td><td>{{ d['birth_date'] }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="muted">{{ drivers|length }} driver(s) found.</p>
+{% else %}
+<p class="muted">No drivers match “{{ query }}”.</p>
+{% endif %}
+<p><a class="button" href="{{ url_for('new_driver') }}">Register a new driver</a></p>
+{% endblock %}
