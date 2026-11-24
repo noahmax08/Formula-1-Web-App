@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error %}
+{% block title %}Register a driver{% endblock %}
+{% block content %}
+<h1>Register a new driver</h1>
+<p class="muted">Adds the driver and their entry for the chosen season together. If either step fails, nothing is saved.</p>
+{% if errors.get('form') %}<div class="flash error">{{ errors['form'] }}</div>{% endif %}
+<form method="post" class="stacked">
+  <label>Full name
+    <input name="driver_name" value="{{ form.get('driver_name', '') }}" maxlength="50" required>
+    {{ field_error(errors, 'driver_name') }}</label>
+  <label>Nationality
+    <input name="nationality" value="{{ form.get('nationality', '') }}" maxlength="30" required>
+    {{ field_error(errors, 'nationality') }}</label>
+  <label>Date of birth
+    <input type="date" name="birth_date" value="{{ form.get('birth_date', '') }}" required>
+    {{ field_error(errors, 'birth_date') }}</label>
+  <label>Season year
+    <input type="number" name="season_year" value="{{ form.get('season_year', '') }}" min="1950" max="2100" required>
+    {{ field_error(errors, 'season_year') }}</label>
+  <label>Team
+    <select name="team_id" required>
+      <option value="">Choose a team…</option>
+      {% for t in teams %}
+      <option value="{{ t['team_id'] }}" {% if form.get('team_id') == t['team_id']|string %}selected{% endif %}>{{ t['team_name'] }}</option>
+      {% endfor %}
+    </select>
+    {{ field_error(errors, 'team_id') }}</label>
+  <label>Car number (1–99)
+    <input type="number" name="car_number" value="{{ form.get('car_number', '') }}" min="1" max="99" required>
+    {{ field_error(errors, 'car_number') }}</label>
+  <button type="submit">Register driver</button>
+  <a href="{{ url_for('drivers') }}">Cancel</a>
+</form>
+{% endblock %}
