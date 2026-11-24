@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field_error %}
+{% block title %}{% if editing %}Correct result{% else %}Record result{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if editing %}Correct a result{% else %}Record a result{% endif %}</h1>
+<p class="muted">{{ race['season_year'] }} {{ race['race_name'] }} (round {{ race['round_number'] }}). Points are calculated automatically from the finishing position.</p>
+{% if errors.get('form') %}<div class="flash error">{{ errors['form'] }}</div>{% endif %}
+<form method="post" class="stacked">
+  {% if editing %}
+    <p><strong>{{ result['driver_name'] }}</strong>: currently {{ result['finish_position']|fmt }} ({{ result['finish_status'] }}, {{ result['points']|fmt }} points)</p>
+  {% else %}
+  <label>Driver
+    <select name="entry_id" required>
+      <option value="">Choose a driver…</option>
+      {% for e in entries %}
+      <option value="{{ e['entry_id'] }}" {% if form.get('entry_id') == e['entry_id']|string %}selected{% endif %}>{{ e['driver_name'] }} ({{ e['team_name'] }}, #{{ e['car_number'] }})</option>
+      {% endfor %}
+    </select>
+    {{ field_error(errors, 'entry_id') }}</label>
+  <label>Starting grid position (1–30)
+    <input type="number" name="grid_position" value="{{ form.get('grid_position', '') }}" min="1" max="30" required>
+    {{ field_error(errors, 'grid_position') }}</label>
+  {% endif %}
+  <fieldset>
+    <legend>Outcome</legend>
+    <label class="radio"><input type="radio" name="outcome" value="finished" {% if form.get('outcome') == 'finished' %}checked{% endif %}> Finished the race</label>
+    <label>Finishing position (1–30)
+      <input type="number" name="finish_position" value="{{ form.get('finish_position', '') }}" min="1" max="30">
+      {{ field_error(errors, 'finish_position') }}</label>
+    <label class="radio"><input type="radio" name="outcome" value="dnf" {% if form.get('outcome') == 'dnf' %}checked{% endif %}> Did not finish (DNF)</label>
+    <label>Reason (for example Engine)
+      <input name="dnf_reason" value="{{ form.get('dnf_reason', '') }}" maxlength="30">
+      {{ field_error(errors, 'dnf_reason') }}</label>
+    {{ field_error(errors, 'outcome') }}
+  </fieldset>
+  <button type="submit">{% if editing %}Save correction{% else %}Record result{% endif %}</button>
+  <a href="{{ url_for('race_detail', race_id=race['race_id']) }}">Cancel</a>
+</form>
+{% endblock %}
