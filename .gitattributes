@@ -1,0 +1,6 @@
+# Keep Unix line endings so "bash run_queries.sh" works after cloning on Windows
+* text=auto
+*.sh  text eol=lf
+*.sql text eol=lf
+*.py  text eol=lf
+*.png binary
