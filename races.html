@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Races{% endblock %}
+{% block content %}
+<h1>Races</h1>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Season</th><th>Round</th><th>Race</th><th>Date</th><th>Results</th></tr></thead>
+  <tbody>
+  {% for r in races %}
+    <tr>
+      <td>{{ r['season_year'] }}</td><td>{{ r['round_number'] }}</td>
+      <td><a href="{{ url_for('race_detail', race_id=r['race_id']) }}">{{ r['race_name'] }}</a></td>
+      <td>{{ r['race_date'] }}</td><td>{{ r['results_recorded'] }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
