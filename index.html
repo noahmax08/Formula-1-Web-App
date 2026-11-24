@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>F1 Race Results Tracker</h1>
+<p>Browse drivers, teams, and race results, record new results, and see season standings.</p>
+<div class="cards">
+  <div class="card"><strong>{{ counts['drivers'] }}</strong><span>drivers</span></div>
+  <div class="card"><strong>{{ counts['teams'] }}</strong><span>teams</span></div>
+  <div class="card"><strong>{{ counts['races'] }}</strong><span>races</span></div>
+  <div class="card"><strong>{{ counts['results'] }}</strong><span>results</span></div>
+</div>
+<h2>What would you like to do?</h2>
+<ul class="actions">
+  <li><a href="{{ url_for('drivers') }}">Search or browse drivers</a>: view a driver's teams and results</li>
+  <li><a href="{{ url_for('races') }}">View races</a>: see results, record, correct, or delete a result</li>
+  <li><a href="{{ url_for('new_driver') }}">Register a new driver</a> for a season</li>
+  <li><a href="{{ url_for('standings') }}">Season standings</a>: drivers and teams</li>
+  <li><a href="{{ url_for('progression') }}">Standings race by race</a>: a chart of how positions change</li>
+  <li><a href="{{ url_for('compare') }}">Head-to-head comparison</a> of two drivers</li>
+  <li><a href="{{ url_for('transaction_demo') }}">Transaction demo</a>: watch a multi-step change commit or roll back as one unit</li>
+</ul>
+{% endblock %}
