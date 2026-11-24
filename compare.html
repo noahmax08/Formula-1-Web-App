@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "_macros.html" import table %}
+{% block title %}Head-to-head{% endblock %}
+{% block content %}
+<h1>Head-to-head comparison</h1>
+<p class="muted">Compares two drivers in the races of one season where both have a result.</p>
+<form method="get" class="stacked">
+  <label>Season
+    <select name="season">
+      {% for s in seasons %}<option value="{{ s }}" {% if s == season %}selected{% endif %}>{{ s }}</option>{% endfor %}
+    </select></label>
+  <label>First driver
+    <select name="a">
+      {% for d in drivers %}<option value="{{ d['driver_id'] }}" {% if d['driver_id'] == first %}selected{% endif %}>{{ d['driver_name'] }}</option>{% endfor %}
+    </select></label>
+  <label>Second driver
+    <select name="b">
+      {% for d in drivers %}<option value="{{ d['driver_id'] }}" {% if d['driver_id'] == second %}selected{% endif %}>{{ d['driver_name'] }}</option>{% endfor %}
+    </select></label>
+  <button type="submit">Compare</button>
+</form>
+{% if error %}
+  <div class="flash error">{{ error }}</div>
+{% elif submitted %}
+  {% if per_race %}
+    <h2>Race by race</h2>
+    {{ table(per_race) }}
+    <h2>Who finished ahead more often</h2>
+    {{ table(summary) }}
+  {% else %}
+    <p class="muted">These drivers have no races in common with recorded results that season.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}
