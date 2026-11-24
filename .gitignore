@@ -1,0 +1,20 @@
+# Database file: it is rebuilt from schema.sql and insert_data.sql
+f1.db
+*.db
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local configuration and secrets (none are needed by this project)
+.env
