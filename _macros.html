@@ -1,0 +1,21 @@
+{# Renders a list of dict rows as a table; headers come from the dict keys. #}
+{% macro table(rows) %}
+  {% if rows %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr>{% for key in rows[0].keys() %}<th>{{ key.replace('_', ' ').title() }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>{% for key in row.keys() %}<td>{{ row[key]|fmt }}</td>{% endfor %}</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="muted">No rows to show.</p>
+  {% endif %}
+{% endmacro %}
+
+{% macro field_error(errors, name) %}
+  {% if errors.get(name) %}<span class="error">{{ errors[name] }}</span>{% endif %}
+{% endmacro %}
