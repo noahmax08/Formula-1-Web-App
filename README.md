@@ -119,7 +119,7 @@ The application is written in **Python** (3.8 or newer) with **Flask**.
    ```
 3. Open **http://127.0.0.1:5000** in a browser. Press `Ctrl+C` in the terminal to stop it.
 
-*Note: I created and ran this all in VSCode, when i ran `python3 web_app.py` it opened up the web_app inside of VSCode's own integrated browser.*
+*Note: I created and ran this all in VSCode, when I ran `python3 web_app.py` it opened up the web_app inside of VSCode's own integrated browser.*
 
 If `f1.db` does not exist, the application builds it automatically from `schema.sql` and
 `insert_data.sql`. To restore the original data at any time, stop the app and run
