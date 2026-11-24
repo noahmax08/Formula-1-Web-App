@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% from "_macros.html" import table %}
+{% block title %}{{ driver['driver_name'] }}{% endblock %}
+{% block content %}
+<h1>{{ driver['driver_name'] }}</h1>
+<p class="muted">{{ driver['nationality'] }} · born {{ driver['birth_date'] }}</p>
+<h2>Teams by season</h2>
+{{ table(teams) }}
+<h2>Race results</h2>
+{{ table(results) }}
+<p><a href="{{ url_for('drivers') }}">← Back to drivers</a></p>
+{% endblock %}
