@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% from "_macros.html" import table %}
+{% block title %}Transaction demo{% endblock %}
+{% block content %}
+<h1>Transaction demo</h1>
+<p>A stand-in driver, <strong>{{ demo['driver_name'] }}</strong>, is signed by {{ team['team_name'] }}
+  for {{ season }} (car {{ car }}) and gets a result in the {{ race['race_name'] }}. Three inserts
+  have to succeed <em>together</em>:</p>
+<ol>
+  <li>add the driver,</li>
+  <li>create their season entry,</li>
+  <li>record their race result.</li>
+</ol>
+<p class="muted">If one step failed on its own, you could be left with a driver who has no entry, or a
+  result that points at something that does not exist. Wrapping the steps in
+  <code>BEGIN</code> … <code>COMMIT</code>/<code>ROLLBACK</code> makes them all-or-nothing.
+  This page runs the same scenario as <code>transaction.sql</code>.</p>
+
+{% if present and not result %}
+<div class="flash info">
+  The demo driver is currently in the database (from an earlier <em>commit</em> run).
+  Remove it to run the demo again.
+  <form method="post" class="inline-form" style="margin:.6rem 0 0">
+    <button type="submit" name="action" value="reset" class="danger">Remove demo data</button>
+  </form>
+</div>
+{% elif not result %}
+<h2>Choose a run</h2>
+<form method="post" class="tx-choices">
+  <div class="tx-choice">
+    <button type="submit" name="action" value="rollback">Run and roll back</button>
+    <span class="muted">All three steps succeed, then <code>ROLLBACK</code> undoes them. The database is unchanged.</span>
+  </div>
+  <div class="tx-choice">
+    <button type="submit" name="action" value="fail">Run with a failing step 3</button>
+    <span class="muted">Step 3 points at a race that does not exist. Steps 1 and 2 are undone too.</span>
+  </div>
+  <div class="tx-choice">
+    <button type="submit" name="action" value="commit" class="danger">Run and commit</button>
+    <span class="muted">Keeps the driver, entry and result. You can remove them afterwards.</span>
+  </div>
+</form>
+{% endif %}
+
+{% if result %}
+  {% if result.failed %}
+  <div class="flash error"><strong>Step failed, so the transaction was rolled back.</strong>
+    Steps 1 and 2 had worked, but they were undone along with everything else. Without a transaction,
+    the new driver and entry would have been left behind with no result.</div>
+  {% elif result.ended == 'COMMIT' %}
+  <div class="flash success"><strong>Committed.</strong> The driver, entry and result are now permanent.
+    Find them under <a href="{{ url_for('drivers') }}?q=okafor">Drivers</a> or on the
+    <a href="{{ url_for('race_detail', race_id=race['race_id']) }}">{{ race['race_name'] }}</a> page.</div>
+  {% else %}
+  <div class="flash info"><strong>Rolled back.</strong> All three steps succeeded inside the transaction,
+    then <code>ROLLBACK</code> undid them together. The database is unchanged.</div>
+  {% endif %}
+
+  <h2>1. Before the transaction</h2>
+  <p class="muted">{{ team['team_name'] }} drivers in {{ season }}:</p>
+  {{ table(result.before.standings) }}
+
+  <h2>2. The transaction, step by step</h2>
+  <ol class="tx-steps">
+    {% for s in result.steps %}
+    <li class="tx-step {{ s.status }}">
+      <div class="tx-head"><strong>{{ s.title }}</strong>
+        <span class="badge {{ s.status }}">{{ 'OK' if s.status == 'ok' else 'FAILED' }}</span></div>
+      <pre>{{ s.sql }}</pre>
+      <p class="muted">{{ s.note }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  <h2>3. Inside the transaction, just before it ended</h2>
+  <p class="muted">
+    {% if result.failed %}The half-finished state: the driver and entry exist, but the result does not.
+    This is exactly what the rollback prevents from becoming permanent.
+    {% else %}All three changes are visible to this connection, but no one else can rely on them yet.{% endif %}
+  </p>
+  {{ table(result.inside.standings) }}
+  {{ table(result.inside.counts) }}
+
+  <h2>4. After {{ result.ended }}</h2>
+  {{ table(result.after.standings) }}
+  {{ table(result.after.counts) }}
+
+  <p class="row-actions">
+    <a href="{{ url_for('transaction_demo') }}">Run another demo</a>
+    {% if present %}
+    <form method="post" class="inline-form" style="display:inline">
+      <button type="submit" name="action" value="reset" class="danger">Remove demo data</button>
+    </form>
+    {% endif %}
+  </p>
+{% endif %}
+{% endblock %}
