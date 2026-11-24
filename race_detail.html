@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ race['race_name'] }}{% endblock %}
+{% block content %}
+<h1>{{ race['season_year'] }} {{ race['race_name'] }}</h1>
+<p class="muted">Round {{ race['round_number'] }} · {{ race['circuit_name'] }}, {{ race['country_location'] }} · {{ race['race_date'] }}</p>
+{% if results %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Pos</th><th>Driver</th><th>Team</th><th>Car</th><th>Grid</th><th>Points</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for r in results %}
+    <tr>
+      <td>{{ r['finish_position']|fmt }}</td><td>{{ r['driver_name'] }}</td><td>{{ r['team_name'] }}</td>
+      <td>{{ r['car_number'] }}</td><td>{{ r['grid_position'] }}</td><td>{{ r['points']|fmt }}</td>
+      <td>{{ r['finish_status'] }}</td>
+      <td class="row-actions">
+        <a href="{{ url_for('edit_result', result_id=r['result_id']) }}">Correct</a>
+        <a href="{{ url_for('delete_result', result_id=r['result_id']) }}">Delete</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No results have been recorded for this race yet.</p>
+{% endif %}
+{% if can_add %}
+<p><a class="button" href="{{ url_for('new_result', race_id=race['race_id']) }}">Record a result</a></p>
+{% endif %}
+<p><a href="{{ url_for('races') }}">← Back to races</a></p>
+{% endblock %}
