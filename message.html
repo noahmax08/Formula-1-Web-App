@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>{{ message }}</p>
+{% if confirm_label %}
+<form method="post" class="inline-form">
+  <button type="submit" class="danger">{{ confirm_label }}</button>
+  <a href="{{ cancel_url }}">Cancel</a>
+</form>
+{% else %}
+<p><a href="{{ url_for('index') }}">Back to the home page</a></p>
+{% endif %}
+{% endblock %}
