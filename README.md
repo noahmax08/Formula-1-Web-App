@@ -43,6 +43,9 @@ Python 3.8 and newer is recent enough.)
 | `requirements.txt` | Python dependencies (Flask only) |
 | `.gitignore`, `.gitattributes` | Keep `f1.db` out of Git and keep Unix line endings for `run_queries.sh` |
 
+*Note: `templates/ `and `static/` have all their files directly committed to the branch, templates includes 
+all of the .html files while static includes the .css file.*
+
 ## ER diagram
 
 ![ER diagram](erd.png)
